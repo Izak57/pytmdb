@@ -11,8 +11,7 @@ __all__ = [
     "CrewMember", "GuestStar", "EpisodeDetails",
     "Someone", "Network", "Country",
     "Language", "TVSeriesDetails", "SeasonDetails",
-    "MovieCredits", "TVSeriesCredits", "Certification",
-    "Certifications"
+    "MovieCredits", "TVSeriesCredits"
 ]
 
 
@@ -26,6 +25,12 @@ def good_release_date(date_str: str) -> str | None:
 
 
 ReleaseDate = Annotated[date | None, BeforeValidator(lambda ds: ds or None)]
+
+
+
+class Genre(BaseModel):
+    id: int
+    name: str
 
 
 
@@ -47,6 +52,7 @@ class Movie(APIObj):
     poster_path: str | None
     backdrop_path: str | None
     genre_ids: list[int]
+    genres: list[Genre] | None = Field(default=None, exclude=True)  # type: ignore
     original_language: str
     original_title: str
     popularity: float
@@ -96,12 +102,6 @@ class TVSeries(APIObj):
         if not self.backdrop_path:
             return None
         return img_url(self.backdrop_path)
-    
-
-
-class Genre(BaseModel):
-    id: int
-    name: str
 
 
 
@@ -161,6 +161,7 @@ class MovieDetails(Movie):
     status: str | None
     tagline: str | None
     genre_ids: None = Field(default=None, exclude=True) # type: ignore
+    genres: list[Genre] # type: ignore
     spoken_languages: list[SpokenLanguage]
 
 
@@ -292,7 +293,7 @@ class TVSeriesDetails(TVSeries):
     in_production: bool
     languages: list[str]
     last_air_date: ReleaseDate
-    last_episode_to_air: TVSeriesEpisode | None
+    last_episode_to_air: TVSeriesEpisode
     next_episode_to_air: TVSeriesEpisode | None
     networks: list[Network]
     number_of_episodes: int
@@ -348,13 +349,3 @@ class TVSeriesCredits(APIObj):
     id: int
     cast: list[GuestStar]
     crew: list[CrewMember]
-
-
-class Certification(BaseModel):
-    certification: str
-    meaning: str
-    order: int
-
-
-class Certifications(APIObj):
-    certifications: dict[str, list[Certification]]
