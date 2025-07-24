@@ -293,7 +293,7 @@ class TVSeriesDetails(TVSeries):
     in_production: bool
     languages: list[str]
     last_air_date: ReleaseDate
-    last_episode_to_air: TVSeriesEpisode
+    last_episode_to_air: TVSeriesEpisode | None
     next_episode_to_air: TVSeriesEpisode | None
     networks: list[Network]
     number_of_episodes: int
