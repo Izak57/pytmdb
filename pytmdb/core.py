@@ -203,7 +203,6 @@ class TMDbClient:
 
     def tv_series_detail(self, tv_id: int) -> models.TVSeriesDetails:
         data = self.req("GET", f"/tv/{tv_id}")
-        print(data)
         return models.TVSeriesDetails.model_validate(data)
 
 
