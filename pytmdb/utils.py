@@ -36,9 +36,16 @@ class TMDbPaginator(Generic[PageObjT]):
         self.total_pages = res["total_pages"]
         self.total_results = res["total_results"]
 
-        data = [self.data_model.model_validate(item) for item in res["results"]]
+        data = []
 
-        self.data.extend(data)
+        for item in res["results"]:
+            try:
+                obj = self.data_model.model_validate(item)
+            except:
+                continue
+            data.append(obj)
+
+        self.data = data
         return self.data
 
 
