@@ -340,13 +340,3 @@ class TMDbClient:
     def get_tv_credits(self, id: int) -> models.TVSeriesCredits:
         data = self.req("GET", f"/tv/{id}/credits")
         return models.TVSeriesCredits.model_validate(data)
-
-
-    def get_movies_certifications(self) -> models.Certifications:
-        data = self.req("GET", "/certification/movie/list")
-        return models.Certifications.model_validate(data)
-
-
-    def get_tv_certifications(self) -> models.Certifications:
-        data = self.req("GET", "/certification/tv/list")
-        return models.Certifications.model_validate(data)
