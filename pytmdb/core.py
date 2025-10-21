@@ -16,13 +16,20 @@ class TMDbClient:
                  api_key: str | None = None,
                  bearer_token: str | None = None,
                  language: str | None = None) -> None:
+        """
+        Initialize the TMDb client.
+        """
         self.api_key = api_key
+        """The API key used to do requests."""
         self.bearer_token = bearer_token
+        """The bearer token used to do requests."""
         self.language = language
+        """The language of the data returned by the TMDb API."""
 
         self.client = Client(
             base_url="https://api.themoviedb.org/3"
         )
+        """The httpx HTTP client."""
 
         if not (bool(self.api_key) ^ bool(self.bearer_token)):
             raise ValueError("You must provide either an API key or a bearer token, but not both or none.")

@@ -55,7 +55,7 @@ class TMDbPaginator(Generic[PageObjT]):
 
         self.page += 1
         return self.get_data()
-    
+
 
     def get_page(self, page: int) -> list[PageObjT]:
         if page < 1 or (self.total_pages and page > self.total_pages):
@@ -63,7 +63,7 @@ class TMDbPaginator(Generic[PageObjT]):
 
         self.page = page
         return self.get_data()
-    
+
 
     def first(self) -> PageObjT | None:
         if not self.data:
