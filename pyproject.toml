@@ -1,7 +1,7 @@
 [project]
 name = "pytmdb"
 version = "0.1.0"
-description = ""
+description = "A Python client for The Movie Database (TMDb) API."
 authors = [
     {name = "Izak", email = "frdev.izak@gmail.com"}
 ]

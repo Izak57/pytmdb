@@ -5,6 +5,7 @@ from pydantic import BaseModel, BeforeValidator, computed_field, Field
 
 __all__ = [
     "Movie", "TVSeries", "Genre",
+    "Collection", "CollectionDetails",
     "SpokenLanguage", "MediaImage", "MovieImages",
     "TVSeriesImages", "SeasonImages", "EpisodeImages",
     "MovieDetails", "TVSeriesSeason", "TVSeriesEpisode",
@@ -15,6 +16,9 @@ __all__ = [
 ]
 
 
+ReleaseDate = Annotated[date | None, BeforeValidator(lambda ds: ds or None)]
+
+
 
 def img_url(path: str, size: str = "original") -> str:
     return f"https://image.tmdb.org/t/p/{size}{path}"
@@ -22,9 +26,6 @@ def img_url(path: str, size: str = "original") -> str:
 
 def good_release_date(date_str: str) -> str | None:
     return date_str or None
-
-
-ReleaseDate = Annotated[date | None, BeforeValidator(lambda ds: ds or None)]
 
 
 
@@ -39,6 +40,28 @@ class APIObj(BaseModel):
     @classmethod
     def load(cls, data) -> Self:
         return cls.model_validate(data)
+
+
+
+class Collection(APIObj):
+    id: int
+    name: str
+    poster_path: str | None
+    backdrop_path: str | None
+
+    @computed_field
+    @property
+    def poster_url(self) -> str | None:
+        if not self.poster_path:
+            return None
+        return img_url(self.poster_path)
+
+    @computed_field
+    @property
+    def backdrop_url(self) -> str | None:
+        if not self.backdrop_path:
+            return None
+        return img_url(self.backdrop_path)
 
 
 
@@ -71,6 +94,14 @@ class Movie(APIObj):
         if not self.backdrop_path:
             return None
         return img_url(self.backdrop_path)
+
+
+
+class CollectionDetails(Collection):
+    original_language: str
+    original_name: str
+    overview: str
+    parts: list[Movie]
 
 
 
@@ -109,6 +140,7 @@ class SpokenLanguage(BaseModel):
     english_name: str
     iso_639_1: str
     name: str
+
 
 
 class MediaImage(BaseModel):
@@ -163,6 +195,7 @@ class MovieDetails(Movie):
     genre_ids: None = Field(default=None, exclude=True) # type: ignore
     genres: list[Genre] # type: ignore
     spoken_languages: list[SpokenLanguage]
+    belongs_to_collection: Collection | None
 
 
 
@@ -232,6 +265,7 @@ class CrewMember(BaseModel):
 
 class GuestStar(CrewMember):
     character: str
+
 
 
 class EpisodeDetails(TVSeriesEpisode):
@@ -339,10 +373,12 @@ class MediaVideo(BaseModel):
     published_at: str
 
 
+
 class MovieCredits(APIObj):
     id: int
     cast: list[GuestStar]
     crew: list[CrewMember]
+
 
 
 class TVSeriesCredits(APIObj):

@@ -223,6 +223,11 @@ class TMDbClient:
         return models.SeasonDetails.model_validate(data)
 
 
+    def collection_detail(self, collection_id: int) -> models.CollectionDetails:
+        data = self.req("GET", f"/collection/{collection_id}")
+        return models.CollectionDetails.model_validate(data)
+
+
     def get_movie_genres(self) -> list[models.Genre]:
         data = self.req("GET", "/genre/movie/list")
         genres = [models.Genre.model_validate(genre) for genre in data["genres"]]
