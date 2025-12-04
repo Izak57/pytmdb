@@ -361,7 +361,7 @@ class SeasonDetails(TVSeriesSeason):
 
 
 class MediaVideo(BaseModel):
-    id: str
+    id: str | None = None
     iso_639_1: str
     iso_3166_1: str
     key: str
@@ -375,13 +375,13 @@ class MediaVideo(BaseModel):
 
 
 class MovieCredits(APIObj):
-    id: int
+    id: int | None = None
     cast: list[GuestStar]
     crew: list[CrewMember]
 
 
 
 class TVSeriesCredits(APIObj):
-    id: int
+    id: int | None = None
     cast: list[GuestStar]
     crew: list[CrewMember]
